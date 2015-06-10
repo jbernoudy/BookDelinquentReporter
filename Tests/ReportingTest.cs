@@ -4,46 +4,26 @@ using BookDelinquentReporter.Services;
 using BookDelinquentReporter.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Moq;
+using GalaSoft.MvvmLight.Ioc;
 
 namespace BookDelinquentReporter.Tests
 {
-    internal class LibraryServiceMock : ILibraryService
-    {
-        private List<Member> _delinquentMemebers;
-
-        public LibraryServiceMock(List<Member> delinquentMemebers)
-        {
-            _delinquentMemebers = delinquentMemebers;
-        }
-
-        public Task<List<Member>> GetAllMembers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public float GetAmountOwed(Member m)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Member> GetDelinquentMembers()
-        {
-            return _delinquentMemebers;
-        }
-
-        Task<List<Member>> ILibraryService.GetDelinquentMembers()
-        {
-            throw new NotImplementedException();
-        }
-    }
-    
     [TestClass]
     public class ReportingTest
     {
         private List<Member> _expectedDelinquentMembers;
 
-        public ReportingTest()
+        private Mock<ILibraryService> mockLibraryService;
+
+        [TestInitialize]
+        public void TestInit()
         {
+            mockLibraryService = new Mock<ILibraryService>();
+
+            SimpleIoc.Default.Unregister<ILibraryService>();
+            SimpleIoc.Default.Register<ILibraryService>(() => mockLibraryService.Object);
+
             _expectedDelinquentMembers = new List<Member>()
             {
                 new Member() { FirstName = "John", LastName = "Doe", Id = "1" },
@@ -55,37 +35,20 @@ namespace BookDelinquentReporter.Tests
         }
 
         [TestMethod]
-        public void TestReportingWithNullService()
-        {
-            try
-            {
-                Reporting reporting = new Reporting(null);
-                Assert.Fail("Expecting ArgumentNullException here.");
-            }
-            catch(Exception e)
-            {
-                Assert.IsInstanceOfType(e, typeof(ArgumentNullException));
-            }
-        }
-
-        [TestMethod]
         public void TestReportingWith0DeliquentMembers()
         {
-            Reporting reporting = new Reporting(new LibraryServiceMock(new List<Member>()));
+            mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(new List<Member>() { });
+            Reporting reporting = new Reporting();
             Assert.AreEqual(0, reporting.GetNumberOfDeliquentMembers());
         }
 
         [TestMethod]
         public void TestReportingWithKnownExpectedDeliquentMembers()
         {
-            Reporting reporting = new Reporting(new LibraryServiceMock(_expectedDelinquentMembers));
-            Assert.AreEqual(_expectedDelinquentMembers.Count, reporting.GetNumberOfDeliquentMembers());
-        }
+            mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(_expectedDelinquentMembers);
 
-        [TestMethod]
-        public void TestReportingGenerateReport()
-        {
-            Reporting reporting = new Reporting(new LibraryServiceMock(_expectedDelinquentMembers));
+            Reporting reporting = new Reporting();
+            Assert.AreEqual(_expectedDelinquentMembers.Count, reporting.GetNumberOfDeliquentMembers());
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BookDelinquentReporter.Models;
 using BookDelinquentReporter.Services;
+using GalaSoft.MvvmLight.Ioc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +11,9 @@ namespace BookDelinquentReporter
 {
     public class Reporting
     {
-        private ILibraryService _libraryService;
-
-        public Reporting(ILibraryService libraryService)
+        private ILibraryService _libraryService
         {
-            if(libraryService == null)
-            {
-                throw new ArgumentNullException("libraryService can not be null");
-            }
-            _libraryService = libraryService;
+            get { return SimpleIoc.Default.GetInstance<ILibraryService>(); }
         }
 
         public async Task<int> GetNumberOfDeliquentMembers()
