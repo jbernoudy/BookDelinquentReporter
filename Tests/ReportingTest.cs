@@ -38,6 +38,7 @@ namespace BookDelinquentReporter.Tests
         public void TestReportingWith0DeliquentMembers()
         {
             mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(new List<Member>() { });
+
             var reporting = new Reporting();
             Assert.AreEqual(0, reporting.GetNumberOfDeliquentMembers().Result);
         }
@@ -46,6 +47,7 @@ namespace BookDelinquentReporter.Tests
         public void TestReportingWith1DeliquentMembers()
         {
             mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(new List<Member>() { new Member() });
+
             var reporting = new Reporting();
             Assert.AreEqual(1, reporting.GetNumberOfDeliquentMembers().Result);
         }
@@ -62,12 +64,34 @@ namespace BookDelinquentReporter.Tests
         [TestMethod]
         public void TestReportingGetAmmountOwed1Delinquent()
         {
-            mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(_expectedDelinquentMembers);
-            mockLibraryService.Setup(m => m.GetAmountOwed(_expectedDelinquentMembers[0])).Returns(1.00f);
+            var _oneDelinquentMember = new List<Member>()
+            {
+                new Member() { FirstName = "Larry", LastName = "Fitzgerald", Id = "1" }
+            };
+            mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(_oneDelinquentMember);
+            mockLibraryService.Setup(m => m.GetAmountOwed(_oneDelinquentMember[0])).Returns(1.00f);
 
             var reporting = new Reporting();
             var _delinquencyReports = reporting.GetDeliquentMemberReports().Result;
             Assert.AreEqual(1.00f, _delinquencyReports[0].AmountOwed);
+        }
+
+        public void TestReportingGetAmmountOwed5Delinquent()
+        {
+            mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(_expectedDelinquentMembers);
+            mockLibraryService.Setup(m => m.GetAmountOwed(_expectedDelinquentMembers[0])).Returns(1.00f);
+            mockLibraryService.Setup(m => m.GetAmountOwed(_expectedDelinquentMembers[1])).Returns(2.00f);
+            mockLibraryService.Setup(m => m.GetAmountOwed(_expectedDelinquentMembers[2])).Returns(3.00f);
+            mockLibraryService.Setup(m => m.GetAmountOwed(_expectedDelinquentMembers[3])).Returns(4.00f);
+            mockLibraryService.Setup(m => m.GetAmountOwed(_expectedDelinquentMembers[4])).Returns(5.00f);
+
+            var reporting = new Reporting();
+            var _delinquencyReports = reporting.GetDeliquentMemberReports().Result;
+            Assert.AreEqual(1.00f, _delinquencyReports[0].AmountOwed);
+            Assert.AreEqual(2.00f, _delinquencyReports[1].AmountOwed);
+            Assert.AreEqual(3.00f, _delinquencyReports[2].AmountOwed);
+            Assert.AreEqual(4.00f, _delinquencyReports[3].AmountOwed);
+            Assert.AreEqual(5.00f, _delinquencyReports[4].AmountOwed);
         }
     }
 }
