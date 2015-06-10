@@ -34,9 +34,25 @@ namespace BookDelinquentReporter.Services
             return overdueMembers;
         }
 
-        public float GetAmountOwed(Member m)
+        public double GetAmountOwed(Member m)
         {
-            throw new NotImplementedException();
+            // todo: make method async
+            var members =  _dataLoadingService.GetMembersAsync().Result;
+            var books =  _dataLoadingService.GetBooksAsync().Result;
+            var checkouts = _dataLoadingService.GetCheckoutsAsync().Result;
+
+            var overdueCheckouts = checkouts.Where(x => x.CheckInDate < DateTime.Now && x.UserId == m.Id);
+
+            double totalDue = 0;
+            double feePerDay = 0.3;
+
+            foreach (var checkOut in overdueCheckouts)
+            {
+                var daysOver = (DateTime.Today - checkOut.CheckInDate).Days;
+                totalDue += daysOver*feePerDay;
+            }
+
+            return totalDue;
         }
     }
 }
