@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\DelinquencyReport.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Checkout.cs" />
     <Compile Include="Models\Member.cs" />
