@@ -263,5 +263,75 @@ namespace Tests
             Assert.AreEqual(0.6, ls.GetAmountOwed(mockMember1));
         }
 
+        [TestMethod]
+        public async Task GetLateChargesNoLateFee()
+        {
+            Checkout mockCheckout1 = new Checkout()
+            {
+                UserId = "1",
+                BookId = "1",
+                CheckInDate = DateTime.Today.AddDays(1)
+            };
+
+            Checkout mockCheckout2 = new Checkout()
+            {
+                UserId = "1",
+                BookId = "2",
+                CheckInDate = DateTime.Today.AddDays(1)
+            };
+
+            Checkout mockCheckout3 = new Checkout()
+            {
+                UserId = "2",
+                BookId = "3",
+                CheckInDate = DateTime.Today.AddDays(1)
+            };
+
+            mockDataLoadingService.Setup(m => m.GetCheckoutsAsync()).ReturnsAsync(new List<Checkout>() { mockCheckout1, mockCheckout2, mockCheckout3 });
+            mockDataLoadingService.Setup(m => m.GetMembersAsync()).ReturnsAsync(new List<Member>() { mockMember1, mockMember2 });
+            mockDataLoadingService.Setup(m => m.GetBooksAsync()).ReturnsAsync(new List<Book>() { mockBook1, mockBook2 });
+
+            LibraryService ls = new LibraryService();
+
+            var lateCharges = await ls.GetLateChargesForMember(mockMember1);
+            Assert.AreEqual(0, lateCharges.Count);
+        }
+
+        public async Task GetLateChargesWithCharges()
+        {
+            Checkout mockCheckout1 = new Checkout()
+            {
+                UserId = "1",
+                BookId = "1",
+                CheckInDate = DateTime.Today.AddDays(-1)
+            };
+
+            Checkout mockCheckout2 = new Checkout()
+            {
+                UserId = "1",
+                BookId = "2",
+                CheckInDate = DateTime.Today.AddDays(-2)
+            };
+
+            Checkout mockCheckout3 = new Checkout()
+            {
+                UserId = "2",
+                BookId = "3",
+                CheckInDate = DateTime.Today.AddDays(1)
+            };
+
+            mockDataLoadingService.Setup(m => m.GetCheckoutsAsync()).ReturnsAsync(new List<Checkout>() { mockCheckout1, mockCheckout2, mockCheckout3 });
+            mockDataLoadingService.Setup(m => m.GetMembersAsync()).ReturnsAsync(new List<Member>() { mockMember1, mockMember2 });
+            mockDataLoadingService.Setup(m => m.GetBooksAsync()).ReturnsAsync(new List<Book>() { mockBook1, mockBook2 });
+
+            LibraryService ls = new LibraryService();
+
+            var lateCharges = await ls.GetLateChargesForMember(mockMember1);
+            Assert.AreEqual(2, lateCharges.Count);
+            Assert.AreEqual(0.30, lateCharges[0].Fee);
+            Assert.AreEqual(0.60, lateCharges[1].Fee);
+
+        }
+
     }
 }

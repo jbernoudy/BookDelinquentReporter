@@ -54,5 +54,30 @@ namespace BookDelinquentReporter.Services
 
             return totalDue;
         }
+
+        public async Task<List<LateCharge>> GetLateChargesForMember(Member m)
+        {
+            // todo: make method async
+            var members = await _dataLoadingService.GetMembersAsync();
+            var books = await _dataLoadingService.GetBooksAsync();
+            var checkouts = await _dataLoadingService.GetCheckoutsAsync();
+
+            var overdueCheckouts = checkouts.Where(x => x.CheckInDate < DateTime.Now && x.UserId == m.Id);
+
+            double totalDue = 0;
+            double feePerDay = 0.3;
+            List<LateCharge> charges = new List<LateCharge>();
+
+            foreach (var checkOut in overdueCheckouts)
+            {
+                var daysOver = (DateTime.Today - checkOut.CheckInDate).Days;
+                var fee = daysOver * feePerDay;
+
+                // todo: handle book does not exist
+                charges.Add(new LateCharge(books.FirstOrDefault(x => x.Id.Equals(checkOut.BookId)), fee, checkOut.CheckInDate));
+            }
+
+            return charges;
+        }
     }
 }

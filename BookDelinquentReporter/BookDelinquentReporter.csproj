@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Checkout.cs" />
+    <Compile Include="Models\LateCharge.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Reporting.cs" />

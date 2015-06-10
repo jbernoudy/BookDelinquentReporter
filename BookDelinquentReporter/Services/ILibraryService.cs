@@ -11,7 +11,7 @@ namespace BookDelinquentReporter.Services
     {
         Task<List<Member>> GetAllMembers();
         Task<List<Member>> GetDelinquentMembers();
-
         double GetAmountOwed(Member m);
+        Task<List<LateCharge>> GetLateChargesForMember(Member m);
     }
 }
