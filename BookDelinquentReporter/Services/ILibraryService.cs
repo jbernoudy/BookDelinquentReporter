@@ -10,5 +10,7 @@ namespace BookDelinquentReporter.Services
     public interface ILibraryService
     {
         List<Member> GetDelinquentMembers();
+
+        float GetAmountOwed(Member m);
     }
 }
