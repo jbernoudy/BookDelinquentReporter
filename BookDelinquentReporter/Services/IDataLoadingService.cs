@@ -9,10 +9,10 @@ namespace BookDelinquentReporter.Services
 {
     public interface IDataLoadingService
     {
-        Task<Member> GetMembersAsync();
+        Task<List<Member>> GetMembersAsync();
 
-        Task<Book> GetBooksAsync();
+        Task<List<Book>> GetBooksAsync();
 
-        Task<Checkout> GetCheckoutsAsync();
+        Task<List<Checkout>> GetCheckoutsAsync();
     }
 }
