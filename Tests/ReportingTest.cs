@@ -39,7 +39,7 @@ namespace BookDelinquentReporter.Tests
         {
             mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(new List<Member>() { });
             var reporting = new Reporting();
-            Assert.AreEqual(0, reporting.GetNumberOfDeliquentMembers());
+            Assert.AreEqual(0, reporting.GetNumberOfDeliquentMembers().Result);
         }
 
         [TestMethod]
@@ -47,7 +47,7 @@ namespace BookDelinquentReporter.Tests
         {
             mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(new List<Member>() { new Member() });
             var reporting = new Reporting();
-            Assert.AreEqual(1, reporting.GetNumberOfDeliquentMembers());
+            Assert.AreEqual(1, reporting.GetNumberOfDeliquentMembers().Result);
         }
 
         [TestMethod]
@@ -56,7 +56,7 @@ namespace BookDelinquentReporter.Tests
             mockLibraryService.Setup(m => m.GetDelinquentMembers()).ReturnsAsync(_expectedDelinquentMembers);
 
             var reporting = new Reporting();
-            Assert.AreEqual(_expectedDelinquentMembers.Count, reporting.GetNumberOfDeliquentMembers());
+            Assert.AreEqual(_expectedDelinquentMembers.Count, reporting.GetNumberOfDeliquentMembers().Result);
         }
 
         [TestMethod]
