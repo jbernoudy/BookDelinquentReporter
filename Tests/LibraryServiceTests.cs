@@ -164,7 +164,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public async Task GetAmountOwedForMemberWithOneLateBook()
+        public void GetAmountOwedForMemberWithOneLateBook()
         {
             Checkout mockCheckout1 = new Checkout()
             {
@@ -198,7 +198,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public async Task GetAmountOwedForMemberWithNoLateBooks()
+        public void GetAmountOwedForMemberWithNoLateBooks()
         {
             Checkout mockCheckout1 = new Checkout()
             {
@@ -231,7 +231,7 @@ namespace Tests
         }
 
         [TestMethod]
-        public async Task GetAmountOwedForMemberWithTwoLateBooks()
+        public void GetAmountOwedForMemberWithTwoLateBooks()
         {
             Checkout mockCheckout1 = new Checkout()
             {
