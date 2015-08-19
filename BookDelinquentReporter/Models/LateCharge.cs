@@ -8,6 +8,7 @@ namespace BookDelinquentReporter.Models
 {
     public class LateCharge
     {
+        private const double BaseCharge = .35;
         public LateCharge(Book book, double fee, DateTime duedate)
         {
             Book = book;
