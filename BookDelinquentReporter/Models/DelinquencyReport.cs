@@ -11,7 +11,7 @@ namespace BookDelinquentReporter
     {
         public Member Member { get; set; }
 
-        public float AmountOwed { get; set; }
+        public double AmountOwed { get; set; }
 
         public List<Book> OverdueBooks { get; set; }
     }

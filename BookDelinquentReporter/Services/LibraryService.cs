@@ -10,7 +10,10 @@ namespace BookDelinquentReporter.Services
 {
     public class LibraryService : ILibraryService
     {
-        private IDataLoadingService _dataLoadingService => SimpleIoc.Default.GetInstance<IDataLoadingService>();
+        private IDataLoadingService _dataLoadingService
+        {
+            get { return SimpleIoc.Default.GetInstance<IDataLoadingService>(); }
+        }
 
         public async Task<List<Member>> GetAllMembers()
         {
